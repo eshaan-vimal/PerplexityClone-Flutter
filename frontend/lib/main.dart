@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'package:frontend/core/themes/colours.dart';
+import 'package:frontend/home/pages/home_page.dart';
 
 
 void main ()
@@ -14,9 +18,13 @@ class MyApp extends StatelessWidget
   @override
   Widget build (BuildContext context)
   {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Perplexity Clone',
-      home: Scaffold(),
+      theme: ThemeData.dark().copyWith(
+        textTheme: GoogleFonts.interTextTheme(),
+        scaffoldBackgroundColor: AppColors.background,
+      ),
+      home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
