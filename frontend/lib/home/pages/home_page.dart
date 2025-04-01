@@ -55,9 +55,10 @@ class _HomePageState extends State<HomePage>
             backgroundColor: const Color.fromARGB(0, 0, 0, 0),
             title: Text(
               'perplexity',
-              // style: TextStyle(
-              //   color: AppColors.whiteColor,
-              // ),
+              style: TextStyle(
+                // fontSize: 22,
+                letterSpacing: 1.5,
+              ),
             ),
             centerTitle: true,
             leading: IconButton(
@@ -79,27 +80,13 @@ class _HomePageState extends State<HomePage>
               children: [
                 Expanded(
                   child: const SizedBox(),
-                  // child: Column(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Text(
-                  //       'Where'
-                  //     ),
-                  //     Text(
-                  //       'knowledge'
-                  //     ),
-                  //     Text(
-                  //       'begins'
-                  //     ),
-                  //   ],
-                  // ),
                 ),
                 ListTile(
                   tileColor: AppColors.searchBarBorder,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
                   ),
-                  leading: Icon(Icons.image_search_outlined),
+                  leading: Icon(Icons.center_focus_strong_outlined),
                   trailing: Icon(Icons.multitrack_audio_rounded),
                   title: Text(
                     "Ask me anything...",

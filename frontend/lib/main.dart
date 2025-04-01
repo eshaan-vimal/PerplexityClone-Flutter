@@ -21,7 +21,12 @@ class MyApp extends StatelessWidget
     return MaterialApp(
       title: 'Perplexity Clone',
       theme: ThemeData.dark().copyWith(
-        textTheme: GoogleFonts.interTextTheme(),
+        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme.copyWith(
+          bodyMedium: TextStyle(
+            fontSize: 15,
+            color: AppColors.whiteColor,
+          ),
+        )),
         scaffoldBackgroundColor: AppColors.background,
       ),
       home: const HomePage(),

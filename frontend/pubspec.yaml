@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   google_fonts: ^6.2.1
+  web_socket_client: ^0.2.0
+  flutter_markdown: ^0.7.6+2
+  webview_flutter: ^4.10.0
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:
