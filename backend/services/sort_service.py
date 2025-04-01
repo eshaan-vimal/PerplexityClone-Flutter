@@ -13,12 +13,18 @@ class SortService:
         query_embedding = self.embedding_model.encode(query)
         
         for result in search_results:
-            result_embedding = self.embedding_model.encode(result)
 
-            similarity = float(np.dot(query_embedding, result_embedding) / (np.linalg.norm(query_embedding) * np.linalg.norm(result_embedding)))
-            result['relevance_score'] = similarity
+            if not result:
+                continue
+            
+            content = result.get('content', '')
+            if not content:
+                continue
 
-            if (similarity > 0.3):
+            result_embedding = self.embedding_model.encode(result.get('content', ''))
+            result['relevance_score'] = float(np.dot(query_embedding, result_embedding) / (np.linalg.norm(query_embedding) * np.linalg.norm(result_embedding)))
+
+            if (result['relevance_score'] > 0.3):
                 relevant_results.append(result)
 
         relevant_results.sort(key=lambda x: x['relevance_score'], reverse=True)

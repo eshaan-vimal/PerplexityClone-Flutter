@@ -12,6 +12,8 @@ class LLMService:
         self.client = genai.Client(api_key=settings.LLM_KEY)
 
     def generate_ws_response (self, query: str, search_results: list[dict]):
+
+        print("ws_response")
         
         context = '\n\n'.join([
             f"Source {i+1} ({result.get('url', '')}): \n{result.get('content', '')}"

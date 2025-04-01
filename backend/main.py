@@ -21,24 +21,24 @@ async def ws_chat (websocket: WebSocket):
     try:
         await asyncio.sleep(0.01)
         data = await websocket.receive_json()
-        body = data.get('query')
+        query = data.get('query')
 
-        if not body:
+        if not query:
             raise Exception('Query not provided')
         
-        search_results, results = search_service.search_web(body)
+        search_results, results = search_service.search_web(query)
         await asyncio.sleep(0.01)
-        sorted_results = sort_service.sort_sources(body.query, search_results)
+        sorted_results = sort_service.sort_sources(query, search_results)
         await websocket.send_json({
             'type': 'sources',
             'data': results,
         })
 
         
-        response = llm_service.generate_ws_response(body, sorted_results)
+        response = llm_service.generate_ws_response(query, sorted_results)
 
         for chunk in response:
-            asyncio.sleep(0.01)
+            await asyncio.sleep(0.01)
             await websocket.send_json({
                 'type': 'response',
                 'data': chunk.text,
