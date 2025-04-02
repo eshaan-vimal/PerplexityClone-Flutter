@@ -11,6 +11,8 @@ class ChatService
   final _sourcesController = StreamController<Map<String,dynamic>>.broadcast();
   final _responseController = StreamController<Map<String,dynamic>>.broadcast();
 
+  bool isReady = false;
+
   static final _instance = ChatService._internal();
 
   ChatService._internal();
@@ -31,23 +33,30 @@ class ChatService
 
       final data = jsonDecode(message);
       
-      if (data['type'] == 'sources')
+      if (data['type'] == 'sources' && isReady)
       {
         _sourcesController.add(data);
       }
-      else if (data['type'] == 'response')
+      else if (data['type'] == 'response' && isReady)
       {
         _responseController.add(data);
       }
     });
   }
 
+  void prepare ()
+  {
+    isReady = true;
+  }
+
   void dispose () async
   {
-    _socket?.close();
+    // _socket?.close();
 
-    await _sourcesController.close();
-    await _responseController.close();
+    // await _sourcesController.close();
+    // await _responseController.close();
+
+    isReady = false;
   }
 
 

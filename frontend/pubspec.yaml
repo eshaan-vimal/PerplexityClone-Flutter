@@ -40,6 +40,7 @@ dependencies:
   flutter_markdown: ^0.7.6+2
   webview_flutter: ^4.10.0
   skeletonizer: ^1.4.3
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -92,3 +93,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: true
+  ios: true
+  adaptive_icon_background: "#1C1C1C" 
+  adaptive_icon_foreground: "assets/icons/perplexity_icon.png"
+  image_path: "assets/icons/perplexity_icon.png"

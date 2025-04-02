@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:frontend/core/constants/constants.dart';
 import 'package:frontend/core/services/chat_service.dart';
 import 'package:frontend/core/themes/colours.dart';
 import 'package:frontend/home/pages/webview_page.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 
 class SearchPage extends StatefulWidget
@@ -23,18 +25,25 @@ class _SearchPageState extends State<SearchPage>
   bool didSubmit = false;
   String answer = "";
 
+  late final Stream<Map<String,dynamic>> _sourcesStream;
+  late final Stream<Map<String,dynamic>> _responseStream;
+
 
   @override
   void initState ()
   {
     super.initState();
     ChatService().connect();
+    ChatService().prepare();
+    _sourcesStream = ChatService().sourcesStream;
+    _responseStream = ChatService().responseStream;
   }
 
   @override
   void dispose ()
   {
     // ChatService().dispose();
+    ChatService().dispose();
     queryController.dispose();
     super.dispose();
   }
@@ -121,23 +130,27 @@ class _SearchPageState extends State<SearchPage>
                     const SizedBox(height: 10,),
 
                     StreamBuilder<Map<String,dynamic>>(
-                      stream: ChatService().sourcesStream, 
+                      stream: _sourcesStream, 
                       initialData: null,
                       builder: (context, snapshot) {
 
-                        if(snapshot.connectionState == ConnectionState.waiting && didSubmit)
+                        List<dynamic> sources = [];
+                        bool isLoading = snapshot.connectionState == ConnectionState.waiting && didSubmit;
+
+                        if (isLoading)
                         {
-                          return const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          );
+                          sources = Constants.sourcesPlaceholder;
                         }
 
                         if(snapshot.hasData && snapshot.data != null)
                         {
-                          List<dynamic> sources = snapshot.data!['data'];
+                          sources = snapshot.data!['data'];
+                        }
 
-                          return SizedBox(
-                            height: 120,
+                        return SizedBox(
+                          height: 120,
+                          child: Skeletonizer(
+                            enabled: isLoading,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: sources.length,
@@ -185,7 +198,7 @@ class _SearchPageState extends State<SearchPage>
                                           fontSize: 12,
                                         ),
                                       ),
-
+                            
                                       onTap: () {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) => WebviewPage(uri: source['url']))
@@ -196,10 +209,8 @@ class _SearchPageState extends State<SearchPage>
                                 );
                               }
                             ),
-                          );
-                        }
-
-                        return const SizedBox();
+                          ),
+                        );
 
                       },
                     ),
@@ -219,36 +230,32 @@ class _SearchPageState extends State<SearchPage>
                     ),
 
                     StreamBuilder(
-                      stream: ChatService().responseStream, 
+                      stream: _responseStream, 
                       initialData: null,
                       builder: (context, snapshot) {
-                        
-                        if (snapshot.connectionState == ConnectionState.waiting && didSubmit)
-                        {
-                          return const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          );
-                        }
+
+                        bool isLoading = snapshot.connectionState == ConnectionState.waiting && didSubmit;
 
                         if (snapshot.hasData && snapshot.data != null)
                         {
                           final answerChunks = snapshot.data!['data'];
                           answer += answerChunks;
+                        }
 
-                          return Column(
+                        return Skeletonizer(
+                          enabled: isLoading,
+                          child: Column(
                             children: [
                               Markdown(
-                                data: answer,
+                                data: isLoading ? Constants.responsePlaceholder : answer,
                                 selectable: true,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 // styleSheet: MarkdownStyleSheet.fromTheme(ThemeData.dark()),
                               ),
                             ],
-                          );
-                        }
-
-                        return const SizedBox();
+                          ),
+                        );
                       },
                     ),
 
